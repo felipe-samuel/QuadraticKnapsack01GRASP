@@ -1,15 +1,16 @@
 import numpy as np
 import csv
 from QuadraticKnapsack01Strategy import QuadraticKnapsack01Strategy as QK
-def read(file_name, max_iterations):
+def read(file_name, alphaConstruction):
     i = 0
     n = -1
     maxWeight = -1
     profits = None
     weights = None
     with open( file_name ) as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=(' '), quotechar='|')
+        spamreader = csv.reader(csvfile, delimiter=(' '), quotechar='|', skipinitialspace=True)
         for row in spamreader:
+            row[:] = (value for value in row if value != '')
             if i == 0:
                 pass
             elif i==1:
@@ -30,8 +31,8 @@ def read(file_name, max_iterations):
                 for j in range(len(row)):
                     weights[j] = int(row[j])
             i+=1
-    return QK(weights, profits, maxWeight, max_iterations)
+    return QK(weights, profits, maxWeight, alphaConstruction)
 
 if __name__ == "__main__":
-    a = read('Data/test/example_input.txt',10)
+    a = read('../Data/test/example_input.txt',10)
     print(a.to_string())

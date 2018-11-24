@@ -23,16 +23,16 @@ class GRASP(object):
     def setStrategy(self, strategy):
         self.strategy = strategy
 
-    def run( max_iterations = maxsize, best_solution = None ):
+    def run( self, maxIterations = maxsize, bestSolutionOF = maxsize ):
         self.iteration = 0
         if self.solution == None:
             self.solution = self.strategy.randomSolution()
 
-        while self.iteration < max_iterations and self.strategy.compareSolution(bestSolution, self.solution):
+        while self.iteration < maxIterations and self.strategy.objectiveFunction(self.solution) < bestSolutionOF:
             self.iteration += 1
             self.solution = self.strategy.construction( )
             solutionCadidate = self.strategy.improvement( self.solution )
-            if self.strategy.compareSolution(solutionCadidate, self.solution)
+            if self.strategy.compareSolution(solutionCadidate, self.solution):
                 self.solution = solutionCadidate
 
-        return self.solution, self.iteration
+        return self.solution, self.strategy.objectiveFunction(self.solution), self.iteration
