@@ -1,34 +1,44 @@
-# knapsack-pulp.py
+import sys
+import os
+sys.path.append('../src')
+import numpy as np
+from scipy.optimize import minimize
+import QKPInstanceReader as QKPreader
 
-from pulp import *
+instance = QKPreader.read('../Data/test/example_input.txt',0.8)
 
-v = [[8, 3],[6, 11]]
-w = [5, 7]
-limit = 17
-items  = [0,1]
-items2 = [[0,0],[0,1],[1,0],[1,1]]
+weights = instance.weights
+profits = instance.profits
+max_weight = instance.maxWeight
+n=weights.size
 
-# Create model
-m = LpProblem("QKP", LpMaximize)
+class ClassName(object):
+    """docstring for ."""
+    def __init__(self, arg):
+        self.arg = arg
 
-# Variables
-x = LpVariable.dicts('x', items, lowBound=0, upBound=1, cat=LpInteger)
+    def objective_funtion(self, X):
+        value = 0
+        print(X)
+        for i in range(X.shape[0]):
+            for j in range(i,X.shape[0]):
+                value  -= profits[i,j]*X[i]*X[j]
+        return value
 
-# Objective
-m += sum(v[i[0]][i[1]]*x[i[0]]*x[i[1]] for i in items2)
+    def constraint(self, X):
+        A = max_weight - np.sum(X*weights)
+        print(A)
+        return A
 
-# Constraint
-m += sum(w[i]*x[i] for i in items) <= limit
+a = ClassName([])
 
-# Optimize
-m.solve()
+cons = {'type':'ineq', 'fun': a.constraint }
 
-# Print the status of the solved LP
-print("Status = %s" % LpStatus[m.status])
+bnds = []
+for i in range(weights.size):
+    bnds += [(0,1)]
+start = np.zeros(weights.size)
+start[0] = 1
 
-# Print the value of the variables at the optimum
-for i in items:
-    print("%s = %f" % (x[i].name, x[i].varValue))
-
-# Print the value of the objective
-print("Objective = %f" % value(m.objective))
+res = minimize(a.objective_funtion, start , bounds = bnds, constraints=cons)
+print(res)
