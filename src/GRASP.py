@@ -30,8 +30,14 @@ class GRASP(object):
 
         while self.iteration < maxIterations and self.strategy.objectiveFunction(self.solution) < bestSolutionOF:
             self.iteration += 1
-            self.solution = self.strategy.construction( )
-            solutionCadidate = self.strategy.improvement( self.solution )
+            solutionCadidate  = None
+            solutionCadidate1 = self.strategy.construction( )
+            solutionCadidate2 = self.strategy.improvement( self.solution )
+            if self.strategy.compareSolution(solutionCadidate1, solutionCadidate2):
+                solutionCadidate = solutionCadidate1
+            else:
+                solutionCadidate = solutionCadidate2
+
             if self.strategy.compareSolution(solutionCadidate, self.solution):
                 self.solution = solutionCadidate
 
