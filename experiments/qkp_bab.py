@@ -55,7 +55,7 @@ if len(sys.argv)>1:
 
 instances = os.listdir(input_dir)
 
-qpk_instance = QKPreader.read('../Data/test/example_input.txt',0)
+qpk_instance = QKPreader.read('../Data/test/small_example_input.txt',0)
 b = branchAndBound(solver = QKPsolver(qpk_instance.weights, qpk_instance.profits, qpk_instance.maxWeight) )
 out = b.run( )
 print('../Data/test/example_input.txt' + ', '+ str(out))
